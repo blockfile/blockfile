@@ -136,7 +136,7 @@ function UploadPage() {
         if (!account) return;
         try {
             const response = await axios.get(
-                `https://dapp.blockfile.xyz/api/ipfsFiles?walletAddress=${account}`
+                `http://localhost:3001/ipfsFiles?walletAddress=${account}`
             );
             setIpfsFiles(response.data);
             console.log("IPFS Files fetched: ", response.data); // Debugging
@@ -458,7 +458,7 @@ function UploadPage() {
     const deleteIpfsFiles = async (fileIds) => {
         try {
             const response = await axios.post(
-                "https://dapp.blockfile.xyz/api/deleteMultipleIpfsFiles",
+                "http://localhost:3001/deleteMultipleIpfsFiles",
                 { fileIds }
             );
             if (response.status === 200) {
@@ -619,7 +619,7 @@ function UploadPage() {
 
                 try {
                     const response = await axios.post(
-                        "https://dapp.blockfile.xyz/api/uploadToIPFS", // Ensure URL is correct
+                        "http://localhost:3001/uploadToIPFS", // Ensure URL is correct
                         formData,
                         {
                             headers: {
@@ -671,8 +671,8 @@ function UploadPage() {
                 sx={{
                     borderBottom: 1,
                     borderColor: "divider",
-                    fontFamily: "Anta", // Specify your font family here
-                }}>
+                }}
+                className="font-anta">
                 <Tabs
                     value={tabValue}
                     onChange={handleTabChange}
@@ -680,7 +680,6 @@ function UploadPage() {
                     sx={{
                         "& .MuiTab-root": {
                             color: "white",
-                            fontFamily: "Anta", // Also here if you want it to apply to Tabs
                         },
                         "& .Mui-selected": {
                             color: "cyan",
@@ -693,7 +692,6 @@ function UploadPage() {
                     <Tab label="IPFS" />
                 </Tabs>
             </Box>
-
             <div className="flex">
                 <div className="w-full pt-4 pl-4 pr-4">
                     {tabValue === 0 && (
