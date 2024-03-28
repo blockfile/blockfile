@@ -136,7 +136,7 @@ function UploadPage() {
         if (!account) return;
         try {
             const response = await axios.get(
-                `https://dapp.blockfile.xyz/ipfsFiles?walletAddress=${account}`
+                `https://dapp.blockfile.xyz/api/ipfsFiles?walletAddress=${account}`
             );
             setIpfsFiles(response.data);
             console.log("IPFS Files fetched: ", response.data); // Debugging
@@ -458,7 +458,7 @@ function UploadPage() {
     const deleteIpfsFiles = async (fileIds) => {
         try {
             const response = await axios.post(
-                "https://dapp.blockfile.xyz/deleteMultipleIpfsFiles",
+                "https://dapp.blockfile.xyz/api/deleteMultipleIpfsFiles",
                 { fileIds }
             );
             if (response.status === 200) {
@@ -619,7 +619,7 @@ function UploadPage() {
 
                 try {
                     const response = await axios.post(
-                        "https://dapp.blockfile.xyz/uploadToIPFS", // Ensure URL is correct
+                        "https://dapp.blockfile.xyz/api/uploadToIPFS", // Ensure URL is correct
                         formData,
                         {
                             headers: {
@@ -763,95 +763,96 @@ function UploadPage() {
                                 <div className="files-table-container md:max-h-[750px] overflow-y-auto sm:max-h-[600px]">
                                     <table className="min-w-full">
                                         <tbody>
-                                            {files.map((file, idx) => (
-                                                <tr
-                                                    key={file._id}
-                                                    className={`border-b hover:bg-slate-700 border-gray-700 ${
-                                                        selectedFiles.has(
-                                                            file._id
-                                                        )
-                                                            ? "bg-blue-500"
-                                                            : "bg-transparent"
-                                                    }`}
-                                                    onClick={() =>
-                                                        toggleFileSelection(
-                                                            file._id
-                                                        )
-                                                    }
-                                                    onContextMenu={(e) =>
-                                                        handleContextMenu(
-                                                            e,
-                                                            file._id
-                                                        )
-                                                    }>
-                                                    <td className="px-6 text-sm font-medium text-left">
-                                                        <div className="flex items-center space-x-3">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={selectedFiles.has(
-                                                                    file._id
-                                                                )}
-                                                                onChange={() =>
-                                                                    toggleFileSelection(
+                                            {Array.isArray(files) &&
+                                                files.map((file, idx) => (
+                                                    <tr
+                                                        key={file._id}
+                                                        className={`border-b hover:bg-slate-700 border-gray-700 ${
+                                                            selectedFiles.has(
+                                                                file._id
+                                                            )
+                                                                ? "bg-blue-500"
+                                                                : "bg-transparent"
+                                                        }`}
+                                                        onClick={() =>
+                                                            toggleFileSelection(
+                                                                file._id
+                                                            )
+                                                        }
+                                                        onContextMenu={(e) =>
+                                                            handleContextMenu(
+                                                                e,
+                                                                file._id
+                                                            )
+                                                        }>
+                                                        <td className="px-6 text-sm font-medium text-left">
+                                                            <div className="flex items-center space-x-3">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={selectedFiles.has(
                                                                         file._id
-                                                                    )
-                                                                }
-                                                                className="form-checkbox text-blue-600"
-                                                            />
-                                                            {(() => {
-                                                                const fileExtension =
-                                                                    file.filename
-                                                                        .split(
-                                                                            "."
-                                                                        )
-                                                                        .pop()
-                                                                        .toLowerCase();
-                                                                const IconComponent =
-                                                                    fileTypeIcons[
-                                                                        fileExtension
-                                                                    ] || (
-                                                                        <FaFileAlt />
-                                                                    );
-                                                                return (
-                                                                    <>
-                                                                        {
-                                                                            IconComponent
-                                                                        }
-                                                                    </>
-                                                                );
-                                                            })()}
-                                                            <div>
-                                                                <span className="hidden sm:block truncate max-w-xs">
-                                                                    {
-                                                                        file.filename
-                                                                    }
-                                                                </span>
-                                                                <span className="block sm:hidden truncate max-w-xs">
-                                                                    {file
-                                                                        .filename
-                                                                        .length >
-                                                                    6
-                                                                        ? `${file.filename.substring(
-                                                                              0,
-                                                                              6
-                                                                          )}…`
-                                                                        : file.filename}
-                                                                </span>
-                                                                <span className="file-size text-xs text-gray-400">
-                                                                    {formatFileSize(
-                                                                        file.size
                                                                     )}
-                                                                </span>
+                                                                    onChange={() =>
+                                                                        toggleFileSelection(
+                                                                            file._id
+                                                                        )
+                                                                    }
+                                                                    className="form-checkbox text-blue-600"
+                                                                />
+                                                                {(() => {
+                                                                    const fileExtension =
+                                                                        file.filename
+                                                                            .split(
+                                                                                "."
+                                                                            )
+                                                                            .pop()
+                                                                            .toLowerCase();
+                                                                    const IconComponent =
+                                                                        fileTypeIcons[
+                                                                            fileExtension
+                                                                        ] || (
+                                                                            <FaFileAlt />
+                                                                        );
+                                                                    return (
+                                                                        <>
+                                                                            {
+                                                                                IconComponent
+                                                                            }
+                                                                        </>
+                                                                    );
+                                                                })()}
+                                                                <div>
+                                                                    <span className="hidden sm:block truncate max-w-xs">
+                                                                        {
+                                                                            file.filename
+                                                                        }
+                                                                    </span>
+                                                                    <span className="block sm:hidden truncate max-w-xs">
+                                                                        {file
+                                                                            .filename
+                                                                            .length >
+                                                                        6
+                                                                            ? `${file.filename.substring(
+                                                                                  0,
+                                                                                  6
+                                                                              )}…`
+                                                                            : file.filename}
+                                                                    </span>
+                                                                    <span className="file-size text-xs text-gray-400">
+                                                                        {formatFileSize(
+                                                                            file.size
+                                                                        )}
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="text-xs text-gray-500">
-                                                        {new Date(
-                                                            file.createdAt
-                                                        ).toLocaleString()}
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                                        </td>
+                                                        <td className="text-xs text-gray-500">
+                                                            {new Date(
+                                                                file.createdAt
+                                                            ).toLocaleString()}
+                                                        </td>
+                                                    </tr>
+                                                ))}
                                         </tbody>
                                     </table>
                                 </div>
@@ -912,70 +913,75 @@ function UploadPage() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {ipfsFiles.map((file, index) => (
-                                                <tr
-                                                    key={file._id}
-                                                    className={`border-b hover:bg-slate-700 border-gray-700 ${
-                                                        selectedFiles.has(
-                                                            file._id
-                                                        )
-                                                            ? "bg-blue-500"
-                                                            : "bg-transparent"
-                                                    }`}
-                                                    onClick={() =>
-                                                        toggleFileSelection(
-                                                            file._id
-                                                        )
-                                                    }
-                                                    onContextMenu={(e) =>
-                                                        handleContextMenu(
-                                                            e,
-                                                            file._id
-                                                        )
-                                                    }>
-                                                    <td className="px-6 py-4">
-                                                        <div className="flex items-center space-x-3">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={selectedFiles.has(
-                                                                    file._id
-                                                                )}
-                                                                onChange={() =>
-                                                                    toggleFileSelection(
+                                            {Array.isArray(files) &&
+                                                ipfsFiles.map((file, index) => (
+                                                    <tr
+                                                        key={file._id}
+                                                        className={`border-b hover:bg-slate-700 border-gray-700 ${
+                                                            selectedFiles.has(
+                                                                file._id
+                                                            )
+                                                                ? "bg-blue-500"
+                                                                : "bg-transparent"
+                                                        }`}
+                                                        onClick={() =>
+                                                            toggleFileSelection(
+                                                                file._id
+                                                            )
+                                                        }
+                                                        onContextMenu={(e) =>
+                                                            handleContextMenu(
+                                                                e,
+                                                                file._id
+                                                            )
+                                                        }>
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex items-center space-x-3">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={selectedFiles.has(
                                                                         file._id
-                                                                    )
-                                                                }
-                                                                className="form-checkbox text-blue-600"
-                                                            />
-                                                            <span>
-                                                                {file.filename}
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 text-left">
-                                                        {file.IpfsHash}
-                                                    </td>
-                                                    <td className="px-6 ">
-                                                        <div>
-                                                            <span className=" text-xs">
-                                                                {new Date(
-                                                                    file.createdAt
-                                                                ).toLocaleDateString()}
-                                                            </span>
-                                                        </div>
-                                                        <div>
-                                                            {" "}
-                                                            <a
-                                                                href={file.link}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className=" text-xs">
-                                                                View on IPFS
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                                                    )}
+                                                                    onChange={() =>
+                                                                        toggleFileSelection(
+                                                                            file._id
+                                                                        )
+                                                                    }
+                                                                    className="form-checkbox text-blue-600"
+                                                                />
+                                                                <span>
+                                                                    {
+                                                                        file.filename
+                                                                    }
+                                                                </span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-left">
+                                                            {file.IpfsHash}
+                                                        </td>
+                                                        <td className="px-6 ">
+                                                            <div>
+                                                                <span className=" text-xs">
+                                                                    {new Date(
+                                                                        file.createdAt
+                                                                    ).toLocaleDateString()}
+                                                                </span>
+                                                            </div>
+                                                            <div>
+                                                                {" "}
+                                                                <a
+                                                                    href={
+                                                                        file.link
+                                                                    }
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className=" text-xs">
+                                                                    View on IPFS
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
                                         </tbody>
                                     </table>
                                 </div>

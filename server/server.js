@@ -74,7 +74,7 @@ app.get("/api/totalSize", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-app.get("/ipfsFiles", async (req, res) => {
+app.get("/api/ipfsFiles", async (req, res) => {
     const { walletAddress } = req.query;
     if (!walletAddress) {
         return res.status(400).send("Wallet address is required");
@@ -89,7 +89,7 @@ app.get("/ipfsFiles", async (req, res) => {
     }
 });
 
-app.post("/deleteMultipleIpfsFiles", async (req, res) => {
+app.post("/api/deleteMultipleIpfsFiles", async (req, res) => {
     const { fileIds } = req.body; // Expecting an array of file IDs
 
     if (!fileIds || !Array.isArray(fileIds) || fileIds.length === 0) {
@@ -135,7 +135,7 @@ app.post("/deleteMultipleIpfsFiles", async (req, res) => {
 });
 
 module.exports = router;
-app.post("/uploadToIPFS", upload.single("file"), async (req, res) => {
+app.post("/api/uploadToIPFS", upload.single("file"), async (req, res) => {
     if (!req.file) {
         return res.status(400).send("No file uploaded.");
     }
